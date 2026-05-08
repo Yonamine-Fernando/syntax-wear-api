@@ -3,6 +3,7 @@ import Fastify from "fastify";
 import "dotenv/config";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
+import productRoutes from "./routes/products.routes.js";
 
 const PORT = parseInt(process.env.PORT ?? "3000");
 
@@ -18,6 +19,8 @@ fastify.register(cors, {
 fastify.register(helmet, {
   contentSecurityPolicy: false,
 });
+
+fastify.register(productRoutes, { prefix: "/products" });
 
 // Declare a route
 fastify.get("/", async (request, reply) => {
