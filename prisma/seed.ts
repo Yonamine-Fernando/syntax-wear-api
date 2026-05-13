@@ -23,7 +23,7 @@ async function main() {
       stock: 50,
       size: ["S", "M", "L"],
       color: "Branco",
-      image_url: "https://example.com/images/camiseta-basica.jpg",
+      imageUrl: "https://example.com/images/camiseta-basica.jpg",
     },
     {
       name: "Calça Jeans Slim",
@@ -32,7 +32,7 @@ async function main() {
       stock: 30,
       size: ["M", "L", "XL"],
       color: "Azul",
-      image_url: "https://example.com/images/calca-jeans-slim.jpg",
+      imageUrl: "https://example.com/images/calca-jeans-slim.jpg",
     },
     {
       name: "Moletom Oversized",
@@ -41,7 +41,7 @@ async function main() {
       stock: 20,
       size: ["M", "L"],
       color: "Cinza",
-      image_url: "https://example.com/images/moletom-oversized.jpg",
+      imageUrl: "https://example.com/images/moletom-oversized.jpg",
     },
     {
       name: "Tênis Casual",
@@ -50,7 +50,7 @@ async function main() {
       stock: 15,
       size: ["40", "41", "42"],
       color: "Preto",
-      image_url: "https://example.com/images/tenis-casual.jpg",
+      imageUrl: "https://example.com/images/tenis-casual.jpg",
     },
     {
       name: "Jaqueta Corta-vento",
@@ -59,7 +59,7 @@ async function main() {
       stock: 12,
       size: ["S", "M", "L", "XL"],
       color: "Verde",
-      image_url: "https://example.com/images/jaqueta-corta-vento.jpg",
+      imageUrl: "https://example.com/images/jaqueta-corta-vento.jpg",
     },
     {
       name: "Regata Fitness",
@@ -68,7 +68,7 @@ async function main() {
       stock: 80,
       size: ["S", "M", "L"],
       color: "Preto",
-      image_url: "https://example.com/images/regata-fitness.jpg",
+      imageUrl: "https://example.com/images/regata-fitness.jpg",
     },
     {
       name: "Shorts Esportivo",
@@ -77,7 +77,7 @@ async function main() {
       stock: 45,
       size: ["M", "L"],
       color: "Azul-Marinho",
-      image_url: "https://example.com/images/shorts-esportivo.jpg",
+      imageUrl: "https://example.com/images/shorts-esportivo.jpg",
     },
     {
       name: "Boné Trucker",
@@ -86,7 +86,7 @@ async function main() {
       stock: 60,
       size: ["Único"],
       color: "Bege",
-      image_url: "https://example.com/images/bone-trucker.jpg",
+      imageUrl: "https://example.com/images/bone-trucker.jpg",
     },
     {
       name: "Meia Esportiva (3 pares)",
@@ -95,7 +95,7 @@ async function main() {
       stock: 120,
       size: ["M", "L"],
       color: "Branco",
-      image_url: "https://example.com/images/meia-esportiva.jpg",
+      imageUrl: "https://example.com/images/meia-esportiva.jpg",
     },
     {
       name: "Cinto de Couro",
@@ -104,7 +104,7 @@ async function main() {
       stock: 25,
       size: ["M", "L", "XL"],
       color: "Marrom",
-      image_url: "https://example.com/images/cinto-couro.jpg",
+      imageUrl: "https://example.com/images/cinto-couro.jpg",
     },
   ];
 

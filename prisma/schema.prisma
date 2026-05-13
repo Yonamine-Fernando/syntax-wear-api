@@ -10,16 +10,20 @@ datasource db {
 
 enum Role {
     ADMIN
-    CUSTOMER
+    USER
 }
 
 model User {
-    id            String   @id @default(uuid())
-    name          String
-    email         String   @unique
-    password_hash String
-    role          Role     @default(CUSTOMER)
-    created_at    DateTime @default(now())
+    id           String    @id @default(uuid())
+    firstName    String    @map("first_name")
+    lastName     String    @map("last_name")
+    cpf          String?
+    phone        String?
+    birthDate    DateTime? @map("birth_date")
+    email        String    @unique
+    passwordHash String    @map("password_hash")
+    role         Role      @default(USER)
+    createdAt    DateTime  @default(now()) @map("created_at")
 
     @@map("users")
 }
@@ -32,8 +36,8 @@ model Product {
     stock       Int      @default(0)
     size        String[]
     color       String
-    image_url   String?
-    created_at  DateTime @default(now())
+    imageUrl    String?  @map("image_url")
+    createdAt   DateTime @default(now()) @map("created_at")
 
     @@map("products")
 }

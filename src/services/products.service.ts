@@ -13,7 +13,7 @@ export const getProducts = async (filters: ProductFilters) => {
     search,
     minCreatedAt,
     maxCreatedAt,
-    sortBy = "created_at",
+    sortBy = "createdAt",
     sortOrder = "desc",
   } = filters;
 
@@ -41,9 +41,9 @@ export const getProducts = async (filters: ProductFilters) => {
 
   // Filtros de Data
   if (minCreatedAt || maxCreatedAt) {
-    where.created_at = {};
-    if (minCreatedAt) where.created_at.gte = new Date(minCreatedAt);
-    if (maxCreatedAt) where.created_at.lte = new Date(maxCreatedAt);
+    where.createdAt = {};
+    if (minCreatedAt) where.createdAt.gte = new Date(minCreatedAt);
+    if (maxCreatedAt) where.createdAt.lte = new Date(maxCreatedAt);
   }
 
   // Motor de Busca (Com a proteção .trim() do curso)
