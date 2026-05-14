@@ -1,6 +1,8 @@
-import { FastifyInstance } from "fastify";
+import fastify, { FastifyInstance } from "fastify";
 import { listProducts } from "../controllers/product.controller.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
 
-export default async function productRoutes(Fastfy: FastifyInstance) {
-  Fastfy.get("/", listProducts);
+export default async function productRoutes(fastify: FastifyInstance) {
+  fastify.addHook("onRequest", authenticate);
+  fastify.get("/", listProducts);
 }
