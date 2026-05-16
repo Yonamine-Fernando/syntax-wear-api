@@ -1,5 +1,5 @@
 // ESM
-import Fastify from "fastify";
+import Fastify, { FastifyError } from "fastify";
 import "dotenv/config";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
@@ -8,6 +8,8 @@ import swagger from "@fastify/swagger";
 import scalar from "@scalar/fastify-api-reference";
 import jwt from "@fastify/jwt";
 import authRoutes from "./routes/auth.route.js";
+import z, { ZodError } from "zod";
+import { errorHandler } from "./middlewares/error.middleware.js";
 
 const PORT = parseInt(process.env.PORT ?? "3000");
 
@@ -80,6 +82,8 @@ fastify.get("/healt", async () => {
     timeStamp: new Date().toISOString(),
   };
 });
+
+fastify.setErrorHandler(errorHandler);
 
 // Run the server!
 fastify.listen({ port: PORT }, function (err, address) {

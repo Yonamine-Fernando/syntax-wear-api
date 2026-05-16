@@ -8,7 +8,7 @@ export interface ProductFilters {
   search?: string; // Busca em name ou description
   minCreatedAt?: Date;
   maxCreatedAt?: Date;
-  sortBy?: "price" | "name" | "created_at" | "stock";
+  sortBy?: "price" | "name" | "createdAt" | "stock";
   sortOrder?: "asc" | "desc";
 }
 

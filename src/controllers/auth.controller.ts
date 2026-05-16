@@ -1,9 +1,12 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { loginUser, registerUser } from "../services/auth.service.js";
 import { AuthRequest, RegisterRequest } from "../types/index.js";
+import { loginSchema, registerSchema } from "../utils/validators.js";
 
-export const register = async (request: FastifyRequest, reply: FastifyReply) => {
-  const user = await registerUser(request.body as RegisterRequest);
+export const register = async (request: FastifyRequest<{ Body: RegisterRequest }>, reply: FastifyReply) => {
+  const validation = registerSchema.parse(request.body as RegisterRequest);
+
+  const user = await registerUser(validation);
 
   const token = request.server.jwt.sign({ userId: user.id });
 
@@ -11,10 +14,12 @@ export const register = async (request: FastifyRequest, reply: FastifyReply) => 
 };
 
 export const login = async (request: FastifyRequest<{ Body: AuthRequest }>, reply: FastifyReply) => {
-  const user = await loginUser(request.body);
+  const validation = loginSchema.parse(request.body as AuthRequest);
+
+  const user = await loginUser(validation);
 
   const token = request.server.jwt.sign({ userId: user.id });
-  reply.send({
+  reply.status(200).send({
     user,
     token,
   });
