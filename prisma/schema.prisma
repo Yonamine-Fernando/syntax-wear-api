@@ -35,9 +35,11 @@ model Product {
     price       Decimal  @db.Decimal(10, 2)
     stock       Int      @default(0)
     size        String[]
-    color       String
+    color       String?
     imageUrl    String?  @map("image_url")
     createdAt   DateTime @default(now()) @map("created_at")
+    slug        String   @unique
+    active      Boolean  @default(true)
 
     @@map("products")
 }

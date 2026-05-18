@@ -1,8 +1,8 @@
-import process from "node:process";
-import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
+import { PrismaClient } from "@prisma/client";
 import "dotenv/config";
+import process from "node:process";
+import pg from "pg";
 
 const { Pool } = pg;
 
@@ -24,6 +24,8 @@ async function main() {
       size: ["S", "M", "L"],
       color: "Branco",
       imageUrl: "https://example.com/images/camiseta-basica.jpg",
+      slug: "camiseta-basica",
+      active: true,
     },
     {
       name: "Calça Jeans Slim",
@@ -33,6 +35,8 @@ async function main() {
       size: ["M", "L", "XL"],
       color: "Azul",
       imageUrl: "https://example.com/images/calca-jeans-slim.jpg",
+      slug: "calca-jeans-slim",
+      active: true,
     },
     {
       name: "Moletom Oversized",
@@ -42,6 +46,8 @@ async function main() {
       size: ["M", "L"],
       color: "Cinza",
       imageUrl: "https://example.com/images/moletom-oversized.jpg",
+      slug: "moletom-oversized",
+      active: true,
     },
     {
       name: "Tênis Casual",
@@ -51,6 +57,8 @@ async function main() {
       size: ["40", "41", "42"],
       color: "Preto",
       imageUrl: "https://example.com/images/tenis-casual.jpg",
+      slug: "tenis-casual",
+      active: true,
     },
     {
       name: "Jaqueta Corta-vento",
@@ -60,6 +68,8 @@ async function main() {
       size: ["S", "M", "L", "XL"],
       color: "Verde",
       imageUrl: "https://example.com/images/jaqueta-corta-vento.jpg",
+      slug: "jaqueta-corta-vento",
+      active: true,
     },
     {
       name: "Regata Fitness",
@@ -69,6 +79,8 @@ async function main() {
       size: ["S", "M", "L"],
       color: "Preto",
       imageUrl: "https://example.com/images/regata-fitness.jpg",
+      slug: "regata-fitness",
+      active: true,
     },
     {
       name: "Shorts Esportivo",
@@ -78,6 +90,8 @@ async function main() {
       size: ["M", "L"],
       color: "Azul-Marinho",
       imageUrl: "https://example.com/images/shorts-esportivo.jpg",
+      slug: "shorts-esportivo",
+      active: true,
     },
     {
       name: "Boné Trucker",
@@ -87,6 +101,8 @@ async function main() {
       size: ["Único"],
       color: "Bege",
       imageUrl: "https://example.com/images/bone-trucker.jpg",
+      slug: "bone-trucker",
+      active: true,
     },
     {
       name: "Meia Esportiva (3 pares)",
@@ -96,6 +112,8 @@ async function main() {
       size: ["M", "L"],
       color: "Branco",
       imageUrl: "https://example.com/images/meia-esportiva.jpg",
+      slug: "meia-esportiva-3-pares",
+      active: true,
     },
     {
       name: "Cinto de Couro",
@@ -105,6 +123,8 @@ async function main() {
       size: ["M", "L", "XL"],
       color: "Marrom",
       imageUrl: "https://example.com/images/cinto-couro.jpg",
+      slug: "cinto-de-couro",
+      active: true,
     },
   ];
 

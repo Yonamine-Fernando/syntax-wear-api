@@ -1,10 +1,84 @@
-import { FastifyInstance } from "fastify";
-import { listProducts } from "../controllers/product.controller.js";
+import fastify, { FastifyInstance } from "fastify";
+import { createNewProduct, getProduct, listProducts } from "../controllers/product.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 
 export default async function productRoutes(fastify: FastifyInstance) {
-  fastify.addHook("onRequest", authenticate);
+  // fastify.addHook("onRequest", authenticate);
   fastify.get("/", productListRouteSchema, listProducts);
+  fastify.get(
+    "/:id",
+    {
+      schema: {
+        tags: ["Products"],
+        description: "Obter um produto pelo ID",
+        params: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+          },
+        },
+        response: {
+          200: {
+            description: "Produto encontrado",
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              size: { type: "string" },
+              color: { type: "string" },
+              imageUrl: { type: "string" },
+              price: { type: "number" },
+              createAt: { type: "string", format: "date-time" },
+              stock: { type: "number" },
+              description: { type: "string" },
+            },
+          },
+          400: {
+            description: "Requisição invalida",
+            type: "object",
+            properties: {
+              message: { type: "string" },
+            },
+          },
+          401: {
+            description: "Não autorizado",
+            type: "object",
+            properties: {
+              message: { type: "string" },
+            },
+          },
+        },
+      },
+    },
+    getProduct,
+  );
+  fastify.post(
+    "/",
+    {
+      schema: {
+        tags: ["products"],
+        description: "criar produto",
+        required: ["name", "description", "price", "stock"],
+        body: {
+          type: "object",
+          properties: {
+            name: { type: "string" },
+            description: { type: "string" },
+            price: { type: "number" },
+            stock: { type: "number" },
+            color: { type: "string" },
+            image: { type: "string" },
+            active: { type: "boolean" },
+            size: {
+              type: "array",
+              items: { type: "string" },
+            },
+          },
+        },
+      },
+    },
+    createNewProduct,
+  );
 }
 
 const productListRouteSchema = {
@@ -39,6 +113,49 @@ const productListRouteSchema = {
           type: "string",
           description: "Ordem de ordenação",
           enum: ["asc", "desc"],
+        },
+      },
+    },
+    response: {
+      200: {
+        description: "Lista de produtos retornada com paginação",
+        type: "object",
+        properties: {
+          data: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                id: { type: "string" },
+                name: { type: "string" },
+                size: { type: "string" },
+                color: { type: "string" },
+                imageUrl: { type: "string" },
+                price: { type: "number" },
+                createdAt: { type: "string", format: "date-time" },
+                stock: { type: "number" },
+                description: { type: "string" },
+              },
+            },
+          },
+          total: { type: "number" },
+          page: { type: "number" },
+          limit: { type: "number" },
+          totalPages: { type: "number" },
+        },
+      },
+      400: {
+        description: "Requisição inválida",
+        type: "object",
+        properties: {
+          message: { type: "string" },
+        },
+      },
+      401: {
+        description: "Não autorizado",
+        type: "object",
+        properties: {
+          message: { type: "string" },
         },
       },
     },

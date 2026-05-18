@@ -53,3 +53,15 @@ export const productListSchema = z.object({
   sortBy: z.enum(["price", "name", "created_at", "stock"]).optional(),
   sortOrder: z.enum(["asc", "desc"]).optional(),
 });
+
+export const createProductSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
+  description: z.string().min(1, "Descrição é obrigatório"),
+  price: z.number().nonnegative("Preço deve ser positivo"),
+  color: z.string().optional(),
+  size: z.array(z.string()).optional(),
+  stock: z.number().int().nonnegative("Estoque deve ser positivo"),
+  active: z.boolean(),
+  images: z.array(z.string()).optional(),
+  slug: z.string().min(1, "Slug é obrigatório"),
+});
