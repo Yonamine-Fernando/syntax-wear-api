@@ -1,5 +1,10 @@
 import fastify, { FastifyInstance } from "fastify";
-import { createNewProduct, getProduct, listProducts } from "../controllers/product.controller.js";
+import {
+  createNewProduct,
+  getProduct,
+  listProducts,
+  updateExistingProduct,
+} from "../controllers/product.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 
 export default async function productRoutes(fastify: FastifyInstance) {
@@ -78,6 +83,34 @@ export default async function productRoutes(fastify: FastifyInstance) {
       },
     },
     createNewProduct,
+  );
+
+  fastify.put(
+    "/:id",
+    {
+      schema: {
+        tags: ["products"],
+        description: "atualizar produto",
+        required: ["name", "description", "price", "stock"],
+        body: {
+          type: "object",
+          properties: {
+            name: { type: "string" },
+            description: { type: "string" },
+            price: { type: "number" },
+            stock: { type: "number" },
+            color: { type: "string" },
+            image: { type: "string" },
+            active: { type: "boolean" },
+            size: {
+              type: "array",
+              items: { type: "string" },
+            },
+          },
+        },
+      },
+    },
+    updateExistingProduct,
   );
 }
 

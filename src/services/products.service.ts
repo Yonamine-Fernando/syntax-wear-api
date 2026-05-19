@@ -114,3 +114,25 @@ export const createProduct = async (data: CreateProduct) => {
   const newProduct = await prisma.product.create({ data });
   return newProduct;
 };
+export const updateProduct = async (id: string, data: Partial<CreateProduct>) => {
+  const existingProduct = await prisma.product.findUnique({
+    where: { id },
+  });
+  if (!existingProduct) {
+    throw new Error("Produto não encontrado");
+  }
+
+  if (data.slug) {
+    const slugExists = await prisma.product.findUnique({
+      where: { slug: data.slug },
+    });
+    if (slugExists && slugExists.id !== id) {
+      throw new Error("Slug já existe, Escolha outro nome para o produto");
+    }
+  }
+  const updatedProduct = await prisma.product.update({
+    where: { id },
+    data,
+  });
+  return updatedProduct;
+};
