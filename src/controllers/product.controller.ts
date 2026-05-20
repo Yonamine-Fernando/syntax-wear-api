@@ -1,5 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createProduct, getProductById, getProducts, updateProduct } from "../services/products.service.js";
+import {
+  createProduct,
+  deleteProduct,
+  getProductById,
+  getProducts,
+  updateProduct,
+} from "../services/products.service.js";
 import { CreateProduct, ProductFilters } from "../types/index.js";
 import { createProductSchema, productListSchema } from "../utils/validators.js";
 import slugify from "slugify";
@@ -50,4 +56,10 @@ export const updateExistingProduct = async (
 
   const product = await updateProduct(id, validate);
   reply.status(200).send(product);
+};
+
+export const deleteExistingProduct = async (request: FastifyRequest<{ Params: { id: string } }>) => {
+  const { id } = request.params;
+
+  await deleteProduct(id);
 };

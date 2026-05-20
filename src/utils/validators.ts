@@ -77,3 +77,6 @@ export const updateProductSchema = z.object({
   images: z.array(z.string()).optional(),
   slug: z.string().min(1, "Slug é obrigatório").optional(),
 });
+export const deleteProductSchema = z.object({
+  id: z.string().min(1, "ID é obrigatório"),
+});

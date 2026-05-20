@@ -39,11 +39,15 @@ export interface CreateProduct {
 }
 
 export interface UpdateProduct extends Partial<CreateProduct> {
-  name?:string;
-  description?:string;
-  price?:number;
+  name?: string;
+  description?: string;
+  price?: number;
   slug?: string;
   stock?: number;
   active?: boolean;
   images?: string[];
+}
+
+export interface DeleteProduct {
+  id: string;
 }
