@@ -37,9 +37,23 @@ model Product {
     size        String[]
     color       String?
     imageUrl    String?  @map("image_url")
+    categoryId  String   @map("category_id")
+    category    Category @relation(fields: [categoryId], references: [id])
     createdAt   DateTime @default(now()) @map("created_at")
     slug        String   @unique
     active      Boolean  @default(true)
 
     @@map("products")
+}
+
+model Category {
+    id          String    @id @default(uuid())
+    name        String
+    slug        String    @unique
+    description String?
+    active      Boolean   @default(true)
+    createdAt   DateTime  @default(now()) @map("created_at")
+    products    Product[]
+
+    @@map("categories")
 }
