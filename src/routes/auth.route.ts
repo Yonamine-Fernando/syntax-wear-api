@@ -10,14 +10,14 @@ export default async function authRoutes(fastify: FastifyInstance) {
         description: "Registra um novo usuário e retorna um token JWT",
         body: {
           type: "object",
-          required: ["firstName", "lastName", "email", "password", "cpf", "birthdate", "phone"],
+          required: ["firstName", "lastName", "email", "password", "cpf", "birthDate", "phone"],
           properties: {
             firstName: { type: "string", description: "João" },
             lastName: { type: "string", description: "Silva" },
             email: { type: "string", description: "Email do usuário" },
             password: { type: "string", description: "Senha do usuário" },
             cpf: { type: "string", description: "CPF do usuário" },
-            birthdate: { type: "string", description: "Data de nascimento do usuário (YYYY-MM-DD)" },
+            birthDate: { type: "string", description: "Data de nascimento do usuário (YYYY-MM-DD)" },
             phone: { type: "string", description: "Telefone do usuário" },
           },
         },

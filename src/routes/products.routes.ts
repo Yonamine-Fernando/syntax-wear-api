@@ -6,10 +6,9 @@ import {
   listProducts,
   updateExistingProduct,
 } from "../controllers/product.controller.js";
-import { authenticate } from "../middlewares/auth.middleware.js";
 
 export default async function productRoutes(fastify: FastifyInstance) {
-  fastify.addHook("onRequest", authenticate);
+  //fastify.addHook("onRequest", authenticate);
   fastify.get("/", productListRouteSchema, listProducts);
   fastify.get(
     "/:id",
@@ -37,6 +36,14 @@ export default async function productRoutes(fastify: FastifyInstance) {
               createAt: { type: "string", format: "date-time" },
               stock: { type: "number" },
               description: { type: "string" },
+              categoryId: { type: "string" },
+              category: {
+                type: "object",
+                properties: {
+                  id: { type: "string" },
+                  name: { type: "string" },
+                },
+              },
             },
           },
           400: {
@@ -62,9 +69,9 @@ export default async function productRoutes(fastify: FastifyInstance) {
     "/",
     {
       schema: {
-        tags: ["products"],
+        tags: ["Products"],
         description: "criar produto",
-        required: ["name", "description", "price", "stock"],
+        required: ["name", "description", "price", "stock", "categoryId"],
         body: {
           type: "object",
           properties: {
@@ -79,6 +86,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
               type: "array",
               items: { type: "string" },
             },
+            categoryId: { type: "string" },
           },
         },
       },
@@ -90,7 +98,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
     "/:id",
     {
       schema: {
-        tags: ["products"],
+        tags: ["Products"],
         description: "atualizar produto",
         required: ["name", "description", "price", "stock"],
         body: {
@@ -107,6 +115,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
               type: "array",
               items: { type: "string" },
             },
+            categoryId: { type: "string" },
           },
         },
       },
@@ -118,7 +127,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
     "/:id",
     {
       schema: {
-        tags: ["products"],
+        tags: ["Products"],
         description: "deletar produto",
         params: {
           type: "object",
@@ -194,6 +203,7 @@ const productListRouteSchema = {
                 createdAt: { type: "string", format: "date-time" },
                 stock: { type: "number" },
                 description: { type: "string" },
+                categoryId: { type: "string" },
               },
             },
           },

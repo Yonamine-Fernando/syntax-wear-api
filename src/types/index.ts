@@ -8,8 +8,15 @@ export interface ProductFilters {
   search?: string; // Busca em name ou description
   minCreatedAt?: Date;
   maxCreatedAt?: Date;
+  categoryId?: string; // Filtrar por categoria
   sortBy?: "price" | "name" | "createdAt" | "stock";
   sortOrder?: "asc" | "desc";
+}
+
+export interface CategoryFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
 }
 
 export interface AuthRequest {
@@ -30,12 +37,13 @@ export interface CreateProduct {
   name: string;
   description: string;
   price: number;
-  colors?: string[];
+  colors?: string;
   sizes?: string[];
   slug: string;
   stock: number;
   active: boolean;
   images?: string[];
+  categoryId: string; // VINCULADO!
 }
 
 export interface UpdateProduct extends Partial<CreateProduct> {

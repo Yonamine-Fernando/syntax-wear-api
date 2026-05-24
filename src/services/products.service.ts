@@ -13,12 +13,17 @@ export const getProducts = async (filters: ProductFilters) => {
     search,
     minCreatedAt,
     maxCreatedAt,
+    categoryId,
     sortBy = "createdAt",
     sortOrder = "desc",
   } = filters;
 
   // Tipagem forte (Sem 'any'!)
   const where: Prisma.ProductWhereInput = {};
+
+  if (categoryId) {
+    where.categoryId = categoryId;
+  }
 
   // Filtros de Preço
   if (minPrice !== undefined || maxPrice !== undefined) {
@@ -74,6 +79,9 @@ export const getProducts = async (filters: ProductFilters) => {
         skip,
         take,
         orderBy: Object.keys(orderBy).length > 0 ? orderBy : undefined,
+        include: {
+          category: true,
+        },
       }),
       prisma.product.count({ where }), // Conta o total que bate com o filtro
     ]);
@@ -95,6 +103,9 @@ export const getProducts = async (filters: ProductFilters) => {
 export const getProductById = async (id: string) => {
   const product = await prisma.product.findUnique({
     where: { id },
+    include: {
+      category: true,
+    },
   });
 
   if (!product) {
@@ -111,7 +122,20 @@ export const createProduct = async (data: CreateProduct) => {
   if (existingProduct) {
     throw new Error("Slug já existe, Escolha outro nome para o produto");
   }
-  const newProduct = await prisma.product.create({ data });
+  const newProduct = await prisma.product.create({
+    data: {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      stock: data.stock,
+      active: data.active,
+      slug: data.slug,
+      color: data.colors,
+      size: data.sizes,
+      images: data.images,
+      categoryId: data.categoryId, // O Prisma aceita o ID direto se estiver no schema
+    },
+  });
   return newProduct;
 };
 export const updateProduct = async (id: string, data: Partial<CreateProduct>) => {

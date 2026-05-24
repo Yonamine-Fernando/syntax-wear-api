@@ -58,8 +58,13 @@ export const updateExistingProduct = async (
   reply.status(200).send(product);
 };
 
-export const deleteExistingProduct = async (request: FastifyRequest<{ Params: { id: string } }>) => {
+export const deleteExistingProduct = async (
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply,
+) => {
   const { id } = request.params;
 
   await deleteProduct(id);
+
+  reply.status(204).send();
 };

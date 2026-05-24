@@ -20,7 +20,7 @@ export const registerUser = async (payload: RegisterRequest) => {
       email: payload.email,
       passwordHash: hashedPassword,
       cpf: payload.cpf,
-      birthDate: payload.birthDate || undefined,
+      birthDate: payload.birthDate ? new Date(payload.birthDate) : undefined,
       phone: payload.phone,
       role: "USER",
     },

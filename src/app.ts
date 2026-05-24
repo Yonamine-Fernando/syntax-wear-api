@@ -1,15 +1,15 @@
 // ESM
-import Fastify, { FastifyError } from "fastify";
-import "dotenv/config";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
-import productRoutes from "./routes/products.routes.js";
+import jwt from "@fastify/jwt";
 import swagger from "@fastify/swagger";
 import scalar from "@scalar/fastify-api-reference";
-import jwt from "@fastify/jwt";
-import authRoutes from "./routes/auth.route.js";
-import z, { ZodError } from "zod";
+import "dotenv/config";
+import Fastify from "fastify";
 import { errorHandler } from "./middlewares/error.middleware.js";
+import authRoutes from "./routes/auth.route.js";
+import categoryRoutes from "./routes/categories.routes.js";
+import productRoutes from "./routes/products.routes.js";
 
 const PORT = parseInt(process.env.PORT ?? "3000");
 
@@ -57,6 +57,7 @@ fastify.register(swagger, {
 });
 
 fastify.register(productRoutes, { prefix: "/products" });
+fastify.register(categoryRoutes, { prefix: "/categories" });
 fastify.register(authRoutes, { prefix: "/auth" });
 
 // Declare a route
