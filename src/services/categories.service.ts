@@ -54,3 +54,64 @@ export const getCategoryById = async (id: string) => {
 
   return category;
 };
+
+export const createCategory = async (data: Prisma.CategoryCreateInput) => {
+  const slugExists = await prisma.category.findUnique({
+    where: { slug: data.slug },
+  });
+
+  if (slugExists) {
+    throw new Error("Slug já existe, Escolha outro nome para a categoria");
+  }
+
+  const category = await prisma.category.create({
+    data,
+  });
+
+  return category;
+};
+
+export const updateCategory = async (id: string, data: Prisma.CategoryUpdateInput) => {
+  const existingCategory = await prisma.category.findUnique({
+    where: { id },
+  });
+
+  if (!existingCategory) {
+    throw new Error("Categoria não encontrada");
+  }
+
+  if (data.slug) {
+    const slugExists = await prisma.category.findUnique({
+      where: { slug: data.slug as string },
+    });
+
+    if (slugExists && slugExists.id !== id) {
+      throw new Error("Slug já existe, Escolha outro nome para a categoria");
+    }
+  }
+
+  const updatedCategory = await prisma.category.update({
+    where: { id },
+    data,
+  });
+
+  return updatedCategory;
+};
+
+export const deleteCategory = async (id: string) => {
+  const existingCategory = await prisma.category.findUnique({
+    where: { id },
+  });
+
+  if (!existingCategory) {
+    throw new Error("Categoria não encontrada");
+  }
+
+  // Soft Delete: Atualiza o status em vez de excluir a linha
+  const deletedCategory = await prisma.category.update({
+    where: { id },
+    data: { active: false },
+  });
+
+  return deletedCategory;
+};

@@ -53,6 +53,20 @@ export const productListSchema = z.object({
   sortOrder: z.enum(["asc", "desc"]).optional(),
 });
 
+export interface CreateCategory {
+  name: string;
+  description?: string;
+  active: boolean;
+  slug: string;
+}
+
+export const createCategorySchema = z.object({
+  name: z.string().min(1, "Nome da categoria é obrigatório"),
+  description: z.string().optional(),
+  active: z.boolean().default(true),
+  slug: z.string().min(1, "Slug é obrigatório"),
+});
+
 export const categoryListSchema = z.object({
   page: z.coerce.number().int().min(1, "A página deve ser no mínimo 1").optional(),
   limit: z.coerce.number().int().min(1, "O limite deve ser no mínimo 1").optional(),
