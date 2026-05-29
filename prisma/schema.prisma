@@ -24,24 +24,26 @@ model User {
     passwordHash String    @map("password_hash")
     role         Role      @default(USER)
     createdAt    DateTime  @default(now()) @map("created_at")
+    orders       Order[]
 
     @@map("users")
 }
 
 model Product {
-    id          String   @id @default(uuid())
+    id          String      @id @default(uuid())
     name        String
     description String?
-    price       Decimal  @db.Decimal(10, 2)
-    stock       Int      @default(0)
+    price       Decimal     @db.Decimal(10, 2)
+    stock       Int         @default(0)
     size        String[]
     color       String?
-    imageUrl    String?  @map("image_url")
-    categoryId  String   @map("category_id")
-    category    Category @relation(fields: [categoryId], references: [id])
-    createdAt   DateTime @default(now()) @map("created_at")
-    slug        String   @unique
-    active      Boolean  @default(true)
+    imageUrl    String?     @map("image_url")
+    categoryId  String      @map("category_id")
+    category    Category    @relation(fields: [categoryId], references: [id])
+    createdAt   DateTime    @default(now()) @map("created_at")
+    slug        String      @unique
+    active      Boolean     @default(true)
+    orderItems  OrderItem[]
 
     @@map("products")
 }
@@ -56,4 +58,39 @@ model Category {
     products    Product[]
 
     @@map("categories")
+}
+
+enum OrderStatus {
+    PENDING
+    PAID
+    SHIPPED
+    DELIVERED
+    CANCELLED
+}
+
+model Order {
+    id         String      @id @default(uuid())
+    userId     String
+    user       User        @relation(fields: [userId], references: [id])
+    status     OrderStatus @default(PENDING)
+    totalPrice Float
+    active     Boolean     @default(true)
+    createdAt  DateTime    @default(now())
+    updatedAt  DateTime    @updatedAt
+
+    items OrderItem[]
+
+    @@map("orders")
+}
+
+model OrderItem {
+    id        String  @id @default(uuid())
+    orderId   String
+    order     Order   @relation(fields: [orderId], references: [id])
+    productId String
+    product   Product @relation(fields: [productId], references: [id])
+    quantity  Int
+    unitPrice Float
+
+    @@map("order_items")
 }
