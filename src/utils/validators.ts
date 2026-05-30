@@ -101,3 +101,21 @@ export const updateProductSchema = z.object({
 export const deleteProductSchema = z.object({
   id: z.string().min(1, "ID é obrigatório"),
 });
+export const orderListSchema = z.object({
+  page: z.coerce.number().int().min(1, "A página deve ser no mínimo 1").optional(),
+  limit: z.coerce.number().int().min(1, "O limite deve ser no mínimo 1").optional(),
+  status: z.enum(["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"]).optional(),
+  userId: z.string().optional(),
+  startDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data inicial inválida (use YYYY-MM-DD)")
+    .optional(),
+  endDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data final inválida (use YYYY-MM-DD)")
+    .optional(),
+});
+
+export const orderParamSchema = z.object({
+  id: z.string().uuid("ID do pedido inválido"),
+});

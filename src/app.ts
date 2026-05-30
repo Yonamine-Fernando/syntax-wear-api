@@ -10,6 +10,7 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import categoryRoutes from "./routes/categories.routes.js";
 import productRoutes from "./routes/products.routes.js";
+import orderRoutes from "./routes/orders.routes.js";
 
 const PORT = parseInt(process.env.PORT ?? "3000");
 
@@ -59,6 +60,7 @@ fastify.register(swagger, {
 fastify.register(productRoutes, { prefix: "/products" });
 fastify.register(categoryRoutes, { prefix: "/categories" });
 fastify.register(authRoutes, { prefix: "/auth" });
+fastify.register(orderRoutes, { prefix: "/orders" });
 
 // Declare a route
 fastify.get("/", async (request, reply) => {

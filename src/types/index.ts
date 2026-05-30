@@ -59,3 +59,11 @@ export interface UpdateProduct extends Partial<CreateProduct> {
 export interface DeleteProduct {
   id: string;
 }
+export interface OrderFilters {
+  page?: number;
+  limit?: number;
+  status?: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+  userId?: string;
+  startDate?: string;
+  endDate?: string;
+}
