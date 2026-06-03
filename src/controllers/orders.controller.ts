@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createOrder, getOrderById, getOrders, updateOrder } from "../services/orders.service.js";
+import { createOrder, deleteOrder, getOrderById, getOrders, updateOrder } from "../services/orders.service.js";
 import { CreateOrderRequest, OrderFilters, UpdateOrderRequest } from "../types/index.js";
 import { createOrderSchema, orderListSchema, orderParamSchema, updateOrderSchema } from "../utils/validators.js";
 
@@ -42,4 +42,18 @@ export const updateOrderController = async (
   const order = await updateOrder(id, userId, userRole, payload);
 
   reply.status(200).send(order);
+};
+
+export const deleteOrderController = async (
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply,
+) => {
+  const { id } = orderParamSchema.parse(request.params);
+  const user = request.user as { userId: string; role?: string };
+  const userId = user.userId;
+  const userRole = user.role || "USER";
+
+  await deleteOrder(id, userId, userRole);
+
+  reply.status(204).send();
 };

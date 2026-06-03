@@ -336,3 +336,22 @@ export const updateOrder = async (
 
   return updated;
 };
+
+export const deleteOrder = async (orderId: string, userId: string, userRole: string) => {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+  });
+
+  if (!order || !order.active) {
+    throw new Error("Pedido não encontrado");
+  }
+
+  if (order.userId !== userId && userRole !== "ADMIN") {
+    throw new Error("Você não tem permissão para deletar este pedido");
+  }
+
+  await prisma.order.update({
+    where: { id: orderId },
+    data: { active: false },
+  });
+};

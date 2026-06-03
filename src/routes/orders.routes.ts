@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 
 import {
   createOrderController,
+  deleteOrderController,
   getOrder,
   listOrders,
   updateOrderController,
@@ -14,6 +15,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
   fastify.post("/", createOrderRouteSchema, createOrderController);
   fastify.get("/", orderListRouteSchema, listOrders);
   fastify.patch("/:id", updateOrderRouteSchema, updateOrderController);
+  fastify.delete("/:id", deleteOrderRouteSchema, deleteOrderController);
   fastify.get("/:id", orderRouteSchema, getOrder);
 }
 
@@ -219,6 +221,41 @@ const updateOrderRouteSchema = {
       },
       403: {
         description: "Sem permissão para atualizar este pedido",
+        type: "object",
+        properties: { message: { type: "string" } },
+      },
+    },
+  },
+};
+
+const deleteOrderRouteSchema = {
+  schema: {
+    tags: ["Orders"],
+    description: "Deleta um pedido existente (soft delete) - Requer Autenticação",
+    security: [{ bearerAuth: [] }],
+    params: {
+      type: "object",
+      required: ["id"],
+      properties: {
+        id: { type: "string", description: "ID do pedido em formato UUID" },
+      },
+    },
+    response: {
+      204: {
+        description: "Pedido deletado com sucesso",
+      },
+      400: {
+        description: "Requisição inválida ou Pedido não encontrado",
+        type: "object",
+        properties: { message: { type: "string" } },
+      },
+      401: {
+        description: "Token ausente ou inválido",
+        type: "object",
+        properties: { message: { type: "string" } },
+      },
+      403: {
+        description: "Sem permissão para deletar este pedido",
         type: "object",
         properties: { message: { type: "string" } },
       },
