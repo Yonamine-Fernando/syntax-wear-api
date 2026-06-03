@@ -8,7 +8,7 @@ export const register = async (request: FastifyRequest<{ Body: RegisterRequest }
 
   const user = await registerUser(validation);
 
-  const token = request.server.jwt.sign({ userId: user.id });
+  const token = request.server.jwt.sign({ userId: user.id, role: user.role });
 
   reply.status(201).send({ user, token });
 };
@@ -18,7 +18,7 @@ export const login = async (request: FastifyRequest<{ Body: AuthRequest }>, repl
 
   const user = await loginUser(validation);
 
-  const token = request.server.jwt.sign({ userId: user.id });
+  const token = request.server.jwt.sign({ userId: user.id, role: user.role });
   reply.status(200).send({
     user,
     token,

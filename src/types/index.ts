@@ -67,3 +67,31 @@ export interface OrderFilters {
   startDate?: string;
   endDate?: string;
 }
+
+export interface ShippingAddress {
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  number?: string;
+  complement?: string;
+}
+
+export interface OrderItemRequest {
+  productId: string;
+  quantity: number;
+}
+
+export interface CreateOrderRequest {
+  items: OrderItemRequest[];
+  shippingAddress?: ShippingAddress;
+  paymentMethod?: string;
+}
+
+export interface UpdateOrderRequest {
+  items?: OrderItemRequest[];
+  shippingAddress?: ShippingAddress | null;
+  paymentMethod?: string | null;
+  status?: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+}

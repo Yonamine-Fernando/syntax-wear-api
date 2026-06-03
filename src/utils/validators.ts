@@ -119,3 +119,28 @@ export const orderListSchema = z.object({
 export const orderParamSchema = z.object({
   id: z.string().uuid("ID do pedido inválido"),
 });
+
+export const shippingAddressSchema = z.object({
+  street: z.string().min(1, "Rua é obrigatória"),
+  city: z.string().min(1, "Cidade é obrigatória"),
+  state: z.string().min(1, "Estado é obrigatório"),
+  zipCode: z.string().min(1, "CEP é obrigatório"),
+  country: z.string().min(1, "País é obrigatório"),
+  number: z.string().optional(),
+  complement: z.string().optional(),
+});
+
+export const orderItemSchema = z.object({
+  productId: z.string().uuid("ID do produto inválido"),
+  quantity: z.number().int().min(1, "Quantidade deve ser no mínimo 1"),
+});
+
+export const createOrderSchema = z.object({
+  items: z.array(orderItemSchema).min(1, "O pedido deve conter pelo menos um item"),
+  shippingAddress: shippingAddressSchema.optional(),
+  paymentMethod: z.string().min(1, "Método de pagamento é obrigatório").optional(),
+});
+
+export const updateOrderSchema = createOrderSchema.partial().extend({
+  status: z.enum(["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"]).optional(),
+});
