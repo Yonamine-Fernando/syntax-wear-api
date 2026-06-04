@@ -95,3 +95,8 @@ export interface UpdateOrderRequest {
   paymentMethod?: string | null;
   status?: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED";
 }
+
+export interface JwtPayload {
+  userId: string;
+  role: "USER" | "ADMIN";
+}
