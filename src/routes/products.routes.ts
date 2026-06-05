@@ -6,11 +6,12 @@ import {
   listProducts,
   updateExistingProduct,
 } from "../controllers/product.controller.js";
+import { authenticate, authorizeAdmin } from "../middlewares/auth.middleware.js";
+import { CreateProduct, ProductFilters } from "../types/index.js";
 
 export default async function productRoutes(fastify: FastifyInstance) {
-  //fastify.addHook("onRequest", authenticate);
-  fastify.get("/", productListRouteSchema, listProducts);
-  fastify.get(
+  fastify.get<{ Querystring: ProductFilters }>("/", productListRouteSchema, listProducts);
+  fastify.get<{ Params: { id: string } }>(
     "/:id",
     {
       schema: {
@@ -65,15 +66,15 @@ export default async function productRoutes(fastify: FastifyInstance) {
     },
     getProduct,
   );
-  fastify.post(
+  fastify.post<{ Body: CreateProduct }>(
     "/",
     {
       schema: {
         tags: ["Products"],
         description: "criar produto",
-        required: ["name", "description", "price", "stock", "categoryId"],
         body: {
           type: "object",
+          required: ["name", "description", "price", "stock", "categoryId"],
           properties: {
             name: { type: "string" },
             description: { type: "string" },
@@ -94,15 +95,15 @@ export default async function productRoutes(fastify: FastifyInstance) {
     createNewProduct,
   );
 
-  fastify.put(
+  fastify.put<{ Params: { id: string }; Body: Partial<CreateProduct> }>(
     "/:id",
     {
       schema: {
         tags: ["Products"],
         description: "atualizar produto",
-        required: ["name", "description", "price", "stock"],
         body: {
           type: "object",
+          required: ["name", "description", "price", "stock"],
           properties: {
             name: { type: "string" },
             description: { type: "string" },
@@ -119,11 +120,12 @@ export default async function productRoutes(fastify: FastifyInstance) {
           },
         },
       },
+      preHandler: [authenticate, authorizeAdmin],
     },
     updateExistingProduct,
   );
 
-  fastify.delete(
+  fastify.delete<{ Params: { id: string } }>(
     "/:id",
     {
       schema: {
@@ -144,6 +146,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
           },
         },
       },
+      preHandler: [authenticate, authorizeAdmin],
     },
     deleteExistingProduct,
   );

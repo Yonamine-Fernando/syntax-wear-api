@@ -10,7 +10,11 @@ export const register = async (request: FastifyRequest<{ Body: RegisterRequest }
 
   const token = request.server.jwt.sign({ userId: user.id, role: user.role });
 
-  reply.status(201).send({ user, token });
+  // Remover campos sensíveis antes de retornar ao cliente
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { passwordHash, ...safeUser } = user as any;
+
+  reply.status(201).send({ user: safeUser, token });
 };
 
 export const login = async (request: FastifyRequest<{ Body: AuthRequest }>, reply: FastifyReply) => {
@@ -19,8 +23,11 @@ export const login = async (request: FastifyRequest<{ Body: AuthRequest }>, repl
   const user = await loginUser(validation);
 
   const token = request.server.jwt.sign({ userId: user.id, role: user.role });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { passwordHash, ...safeUser } = user as any;
+
   reply.status(200).send({
-    user,
+    user: safeUser,
     token,
   });
 };

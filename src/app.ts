@@ -9,21 +9,25 @@ import Fastify from "fastify";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import categoryRoutes from "./routes/categories.routes.js";
-import productRoutes from "./routes/products.routes.js";
 import orderRoutes from "./routes/orders.routes.js";
+import productRoutes from "./routes/products.routes.js";
 
 const PORT = parseInt(process.env.PORT ?? "3000");
 
 const fastify = Fastify({
   logger: true,
 });
+const corsOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : ["http://localhost:3000"];
+const allowCredentials = process.env.CORS_ALLOW_CREDENTIALS === "true";
+
 fastify.register(jwt, {
   secret: process.env.JWT_SECRET!,
+  sign: { expiresIn: process.env.JWT_EXPIRES_IN || "1d" },
 });
 
 fastify.register(cors, {
-  origin: true,
-  credentials: true,
+  origin: corsOrigins,
+  credentials: allowCredentials,
 });
 
 fastify.register(helmet, {

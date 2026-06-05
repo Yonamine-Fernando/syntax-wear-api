@@ -6,12 +6,15 @@ import {
   listCategories,
   updateExistingCategory,
 } from "../controllers/category.controller.js";
+import { authenticate, authorizeAdmin } from "../middlewares/auth.middleware.js";
+import { CategoryFilters, CreateCategory } from "../types/index.js";
 
 export default async function categoryRoutes(fastify: FastifyInstance) {
-  //fastify.addHook( authenticate);
-  fastify.get("/", categoryListRouteSchema, listCategories);
+  fastify.get<{ Querystring: CategoryFilters }>("/", categoryListRouteSchema, listCategories);
   fastify.get("/:id", categoryRouteSchema, getCategory);
-  fastify.post(
+  fastify.post<{
+    Body: CreateCategory;
+  }>(
     "/",
     {
       schema: {
@@ -38,12 +41,21 @@ export default async function categoryRoutes(fastify: FastifyInstance) {
           },
         },
       },
+      preHandler: [authenticate, authorizeAdmin],
     },
     createNewCategory,
   );
-  fastify.put("/:id", updateCategoryRouteSchema, updateExistingCategory);
+  fastify.put<{ Params: { id: string }; Body: Partial<CreateCategory> }>(
+    "/:id",
+    { ...updateCategoryRouteSchema, preHandler: [authenticate, authorizeAdmin] },
+    updateExistingCategory,
+  );
   // Adicione esta linha junto com o seu POST e PUT
-  fastify.delete("/:id", deleteCategoryRouteSchema, deleteExistingCategory);
+  fastify.delete<{ Params: { id: string } }>(
+    "/:id",
+    { ...deleteCategoryRouteSchema, preHandler: [authenticate, authorizeAdmin] },
+    deleteExistingCategory,
+  );
 }
 
 const categoryListRouteSchema = {
