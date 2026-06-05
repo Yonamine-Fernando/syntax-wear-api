@@ -45,6 +45,7 @@ model Product {
     active      Boolean     @default(true)
     orderItems  OrderItem[]
 
+    @@index([categoryId, active])
     @@map("products")
 }
 

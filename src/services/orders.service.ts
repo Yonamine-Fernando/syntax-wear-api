@@ -27,8 +27,8 @@ export const getOrders = async (filters: OrderFilters = {}) => {
     }
   }
 
-  const numPage = Number(page);
-  const numLimit = Number(limit);
+  const numPage = Math.max(Number(page), 1);
+  const numLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
   const skip = (numPage - 1) * numLimit;
 
   const [orders, total] = await Promise.all([
@@ -44,7 +44,12 @@ export const getOrders = async (filters: OrderFilters = {}) => {
         items: {
           include: {
             product: {
-              include: { category: true },
+              select: {
+                id: true,
+                name: true,
+                price: true,
+                slug: true,
+              },
             },
           },
         },

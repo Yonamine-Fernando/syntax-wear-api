@@ -17,7 +17,7 @@ export const registerSchema = z.object({
 
 export const productListSchema = z.object({
   page: z.coerce.number().int().min(1, "A página deve ser no mínimo 1").optional(),
-  limit: z.coerce.number().int().min(1, "O limite deve ser no mínimo 1").optional(),
+  limit: z.coerce.number().int().min(1, "O limite deve ser no mínimo 1").max(100, "O limite máximo é 100").optional(),
   minPrice: z.coerce.number().nonnegative("Preço mínimo deve ser positivo").optional(),
   maxPrice: z.coerce.number().nonnegative("Preço mínimo deve ser positivo").optional().optional(),
   sizes: z.preprocess((val) => {
@@ -103,7 +103,7 @@ export const deleteProductSchema = z.object({
 });
 export const orderListSchema = z.object({
   page: z.coerce.number().int().min(1, "A página deve ser no mínimo 1").optional(),
-  limit: z.coerce.number().int().min(1, "O limite deve ser no mínimo 1").optional(),
+  limit: z.coerce.number().int().min(1, "O limite deve ser no mínimo 1").max(100, "O limite máximo é 100").optional(),
   status: z.enum(["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"]).optional(),
   userId: z.string().optional(),
   startDate: z

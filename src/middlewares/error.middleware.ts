@@ -18,8 +18,13 @@ export const errorHandler = (error: FastifyError, request: FastifyRequest, reply
     });
   }
   console.error("🚨 ERRO INTERNO:", error);
-  return reply.status(500).send({
+  const responseBody: Record<string, unknown> = {
     message: "Erro interno do servidor",
-    debug: error.message,
-  });
+  };
+
+  if (process.env.NODE_ENV !== "production") {
+    responseBody.debug = error.message;
+  }
+
+  return reply.status(500).send(responseBody);
 };
