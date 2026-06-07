@@ -37,21 +37,17 @@ export const getOrders = async (filters: OrderFilters = {}) => {
       skip,
       take: numLimit,
       orderBy: { createdAt: "desc" },
-      include: {
+      select: {
+        id: true,
+        userId: true,
+        status: true,
+        totalPrice: true,
+        createdAt: true,
         user: {
           select: { id: true, firstName: true, lastName: true, email: true },
         },
-        items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                name: true,
-                price: true,
-                slug: true,
-              },
-            },
-          },
+        _count: {
+          select: { items: true },
         },
       },
     }),

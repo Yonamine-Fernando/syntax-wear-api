@@ -58,6 +58,8 @@ model Category {
     createdAt   DateTime  @default(now()) @map("created_at")
     products    Product[]
 
+    @@index([active])
+    @@index([slug])
     @@map("categories")
 }
 
@@ -83,6 +85,9 @@ model Order {
 
     items OrderItem[]
 
+    @@index([userId, active])
+    @@index([status])
+    @@index([createdAt])
     @@map("orders")
 }
 
@@ -95,5 +100,7 @@ model OrderItem {
     quantity  Int
     unitPrice Float
 
+    @@index([orderId])
+    @@index([productId])
     @@map("order_items")
 }

@@ -69,7 +69,7 @@ export const createCategorySchema = z.object({
 
 export const categoryListSchema = z.object({
   page: z.coerce.number().int().min(1, "A página deve ser no mínimo 1").optional(),
-  limit: z.coerce.number().int().min(1, "O limite deve ser no mínimo 1").optional(),
+  limit: z.coerce.number().int().min(1, "O limite deve ser no mínimo 1").max(100, "O limite máximo é 100").optional(),
   search: z.string().optional(),
 });
 

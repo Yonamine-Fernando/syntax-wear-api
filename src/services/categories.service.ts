@@ -16,8 +16,8 @@ export const getCategories = async (filters: CategoryFilters = {}) => {
     };
   }
 
-  const numPage = Number(page);
-  const numLimit = Number(limit);
+  const numPage = Math.max(Number(page), 1);
+  const numLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
   const skip = (numPage - 1) * numLimit;
 
   const [categories, total] = await Promise.all([

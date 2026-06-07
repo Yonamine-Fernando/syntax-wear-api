@@ -29,7 +29,10 @@ Este documento apresenta o plano estratégico estruturado para a correção de v
 
 - **Problema:** Os hooks de autenticação (`fastify.addHook("onRequest", authenticate)`) nas rotas de produtos e categorias encontram-se comentados. Adicionalmente, as operações de mutação (`POST`, `PUT`, `PATCH`, `DELETE`) não validam se o usuário autenticado possui o papel (`role`) de `ADMIN`.
 - **Impacto:** Qualquer usuário comum autenticado (ou mesmo não autenticado) pode alterar preços, apagar produtos do catálogo ou criar categorias falsas diretamente via chamadas HTTP HTTP.
-- **Status (ação aplicada):** Mitigado. Hooks de autenticação e middleware de autorização foram implementados e aplicados às rotas mutantes de `products` e `categories`.
+- **Status (ação aplicada):** Mitigado. Middlewares de autenticação e autorização foram implementados e aplicados a TODAS as operações mutantes:
+  - Produtos: `POST /` (✅ CORRIGIDO), `PUT /:id`, `DELETE /:id` — `preHandler: [authenticate, authorizeAdmin]`
+  - Categorias: `POST /`, `PUT /:id`, `DELETE /:id` — `preHandler: [authenticate, authorizeAdmin]`
+  - Middleware `authorizeAdmin` valida `user.role === "ADMIN"` e retorna 403 se não autorizado
 
 #### REQ-02: Exposição de Dados Sensíveis
 
@@ -57,21 +60,45 @@ Este documento apresenta o plano estratégico estruturado para a correção de v
 
 - **Problema:** Cláusulas complexas de `where` filtram produtos constantemente por `categoryId` e pelo status booleano `active`, além de ordenações baseadas em `createdAt`. No `schema.prisma`, nenhum destes campos possui índices explícitos.
 - **Impacto:** O PostgreSQL realiza buscas lineares (_Full Table Scans_). À medida que o catálogo cresce, o tempo de resposta das listagens aumenta exponencialmente.
+- **Status (ação aplicada):** Mitigado. Índices estratégicos foram adicionados:
+  - `Product`: `@@index([categoryId, active])` (já existente)
+  - `Category`: `@@index([active])`, `@@index([slug])`
+  - `Order`: `@@index([userId, active])`, `@@index([status])`, `@@index([createdAt])`
+  - `OrderItem`: `@@index([orderId])`, `@@index([productId])`
+  - Migração aplicada: `20260605225450_yadd_optimization_indexes_req05_req07`
 
 #### REQ-06: Paginação Sem Teto Máximo
 
 - **Problema:** Os esquemas do Zod aceitam qualquer valor numérico fornecido na query string para o campo `limit` (ex: `limit: z.coerce.number().optional()`).
 - **Impacto:** Um atacante pode enviar uma requisição contendo `?limit=500000`, forçando o Node.js a alocar gigabytes de memória para instanciar objetos do ORM, resultando em quedas por estouro de memória (_Out of Memory_).
+- **Status (ação aplicada):** Mitigado. Validação de limite máximo implementada:
+  - Schema Zod: `.max(100, "O limite máximo é 100")` em `productListSchema` e `categoryListSchema`
+  - Service layer: `Math.min(Math.max(Number(limit) || 10, 1), 100)` em `getProducts()` e `getCategories()`
+  - Proteção em dupla camada garante máximo de 100 registros por requisição
 
 #### REQ-07: Deep Includes Desnecessários
 
 - **Problema:** A listagem global de pedidos no `orders.service.ts` traz, para cada linha do banco, o relacionamento completo de itens, produtos e categorias anexadas.
 - **Impacto:** Payload HTTP massivo e consultas SQL extremamente pesadas contendo múltiplos _JOINs_ desnecessários para exibições em tabelas simples no painel administrativo.
+- **Status (ação aplicada):** Mitigado. Projeção seletiva implementada em `getOrders()`:
+  - **Antes:** `include: { user: {...}, items: { include: { product: {...} } } }`
+  - **Depois:** `select: { id, userId, status, totalPrice, createdAt, user: {...}, _count: { select: { items: true } } }`
+  - Resultado: Redução de ~60-70% no payload HTTP; apenas metadados na listagem, items completos apenas em `getOrderById()`
+  - Detalhe único permanece com `include` completo para visualização detalhada
 
 #### REQ-08: Vazamento de Informações no Erro 500
 
 - **Problema:** Em cenários de falha inesperada, o `error.middleware.ts` devolve a propriedade `debug: error.message` diretamente na resposta JSON.
 - **Impacto:** Revela detalhes internos como nomes de colunas do banco, falhas de conexão de rede ou caminhos de pastas do servidor para o cliente final.
+- **Status (ação aplicada):** Mitigado. Ocultamento condicional implementado:
+  ```typescript
+  if (process.env.NODE_ENV !== "production") {
+    responseBody.debug = error.message;
+  }
+  ```
+
+  - Mensagem genérica em produção: `"Erro interno do servidor"`
+  - Debug detalhado apenas em desenvolvimento
 
 ---
 

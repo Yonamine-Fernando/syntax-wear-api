@@ -71,7 +71,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
     {
       schema: {
         tags: ["Products"],
-        description: "criar produto",
+        description: "criar produto (Apenas ADMIN)",
         body: {
           type: "object",
           required: ["name", "description", "price", "stock", "categoryId"],
@@ -91,6 +91,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
           },
         },
       },
+      preHandler: [authenticate, authorizeAdmin],
     },
     createNewProduct,
   );
