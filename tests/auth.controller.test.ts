@@ -114,4 +114,57 @@ describe("Auth controller", () => {
       token: "fake-login-token",
     });
   });
+
+  it("should fail registration if email already exists", async () => {
+    const request = {
+      body: {
+        firstName: "Test",
+        lastName: "User",
+        email: "existing@example.com",
+        password: "password123",
+        cpf: "12345678901",
+        birthDate: "1990-01-01",
+        phone: "12345678",
+      },
+      server: {
+        jwt: {
+          sign: vi.fn(() => "fake-jwt-token"),
+        },
+      },
+    } as any;
+
+    (registerUser as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Email já cadastrado"));
+
+    const send = vi.fn();
+    const status = vi.fn(() => ({ send }));
+    const reply = { status } as any;
+
+    await expect(register(request, reply)).rejects.toThrow("Email já cadastrado");
+    expect(registerUser).toHaveBeenCalledWith(request.body);
+    expect(status).not.toHaveBeenCalled();
+  });
+
+  it("should fail login with invalid credentials", async () => {
+    const request = {
+      body: {
+        email: "wrong@example.com",
+        password: "badpass",
+      },
+      server: {
+        jwt: {
+          sign: vi.fn(() => "fake-login-token"),
+        },
+      },
+    } as any;
+
+    (loginUser as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Senha inválida"));
+
+    const send = vi.fn();
+    const status = vi.fn(() => ({ send }));
+    const reply = { status } as any;
+
+    await expect(login(request, reply)).rejects.toThrow("Senha inválida");
+    expect(loginUser).toHaveBeenCalledWith(request.body);
+    expect(status).not.toHaveBeenCalled();
+  });
 });
