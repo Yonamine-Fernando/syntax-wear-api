@@ -232,6 +232,42 @@ describe("Product controller - CRUD operations", () => {
     expect(send).toHaveBeenCalledWith(updatedProduct);
   });
 
+  it("should update a product without regenerating slug when name is absent", async () => {
+    const updatedProduct = {
+      id: "prod-3",
+      description: "Preço atualizado",
+      price: 119.99,
+      stock: 40,
+      slug: "camiseta-premium",
+      active: true,
+      createdAt: new Date(),
+      size: ["P", "M", "G"],
+      color: "azul",
+      imageUrl: null,
+      categoryId: "cat-1",
+    };
+
+    (updateProduct as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(updatedProduct);
+
+    const request = {
+      params: { id: "prod-3" },
+      body: {
+        description: "Preço atualizado",
+        price: 119.99,
+      },
+    } as any;
+
+    const send = vi.fn();
+    const status = vi.fn(() => ({ send }));
+    const reply = { status } as any;
+
+    await updateExistingProduct(request, reply);
+
+    expect(updateProduct).toHaveBeenCalledWith("prod-3", { description: "Preço atualizado", price: 119.99 });
+    expect(status).toHaveBeenCalledWith(200);
+    expect(send).toHaveBeenCalledWith(updatedProduct);
+  });
+
   it("should fail when updating non-existent product", async () => {
     (updateProduct as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Produto não encontrado"));
 

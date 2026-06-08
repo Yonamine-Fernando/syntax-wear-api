@@ -187,6 +187,36 @@ describe("Category controller - CRUD operations", () => {
     expect(send).toHaveBeenCalledWith(updatedCategory);
   });
 
+  it("should update a category without changing slug when name is absent", async () => {
+    const updatedCategory = {
+      id: "cat-2",
+      name: "Camisetas",
+      slug: "camisetas",
+      description: "Categoria sem nome novo",
+      active: true,
+      createdAt: new Date(),
+    };
+
+    (updateCategory as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(updatedCategory);
+
+    const request = {
+      params: { id: "cat-2" },
+      body: {
+        description: "Categoria sem nome novo",
+      },
+    } as any;
+
+    const send = vi.fn();
+    const status = vi.fn(() => ({ send }));
+    const reply = { status } as any;
+
+    await updateExistingCategory(request, reply);
+
+    expect(updateCategory).toHaveBeenCalledWith("cat-2", { description: "Categoria sem nome novo", active: true });
+    expect(status).toHaveBeenCalledWith(200);
+    expect(send).toHaveBeenCalledWith(updatedCategory);
+  });
+
   it("should fail when updating a missing category", async () => {
     (updateCategory as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Categoria não encontrada"));
 

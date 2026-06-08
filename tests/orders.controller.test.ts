@@ -154,6 +154,36 @@ describe("Orders controller", () => {
     expect(getOrderById).toHaveBeenCalledWith("22222222-2222-2222-8222-222222222222");
   });
 
+  it("should allow admin to access another user's order", async () => {
+    const mockOrder = {
+      id: "77777777-7777-7777-8777-777777777777",
+      userId: "user-9",
+      status: "PAID",
+      totalPrice: 80,
+      createdAt: new Date(),
+      user: { id: "user-9", firstName: "Admin", lastName: "Access", email: "adminaccess@example.com" },
+      items: [],
+      active: true,
+    };
+
+    (getOrderById as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(mockOrder);
+
+    const request = {
+      params: { id: "77777777-7777-7777-8777-777777777777" },
+      user: { userId: "admin-1", role: "ADMIN" },
+    } as any;
+
+    const send = vi.fn();
+    const status = vi.fn(() => ({ send }));
+    const reply = { status } as any;
+
+    await getOrder(request, reply);
+
+    expect(getOrderById).toHaveBeenCalledWith("77777777-7777-7777-8777-777777777777");
+    expect(status).toHaveBeenCalledWith(200);
+    expect(send).toHaveBeenCalledWith(mockOrder);
+  });
+
   it("should create an order for the authenticated user", async () => {
     const mockOrder = {
       id: "order-5",
