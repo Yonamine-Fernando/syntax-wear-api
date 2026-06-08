@@ -142,5 +142,6 @@ export const createOrderSchema = z.object({
 });
 
 export const updateOrderSchema = createOrderSchema.partial().extend({
+  shippingAddress: shippingAddressSchema.partial().optional(),
   status: z.enum(["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"]).optional(),
 });
