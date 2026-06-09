@@ -1,7 +1,13 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { createOrder, deleteOrder, getOrderById, getOrders, updateOrder } from "../services/orders.service.js";
-import { CreateOrderRequest, JwtPayload, OrderFilters, UpdateOrderRequest } from "../types/index.js";
-import { createOrderSchema, orderListSchema, orderParamSchema, updateOrderSchema } from "../utils/validators.js";
+import { CreateOrderRequest, JwtPayload, OrderFilters } from "../types/index.js";
+import {
+  createOrderSchema,
+  orderListSchema,
+  orderParamSchema,
+  updateOrderSchema,
+  type UpdateOrderPayload,
+} from "../utils/validators.js";
 
 export const listOrders = async (request: FastifyRequest<{ Querystring: OrderFilters }>, reply: FastifyReply) => {
   const filters = orderListSchema.parse(request.query);
@@ -41,7 +47,7 @@ export const createOrderController = async (
 };
 
 export const updateOrderController = async (
-  request: FastifyRequest<{ Params: { id: string }; Body: UpdateOrderRequest }>,
+  request: FastifyRequest<{ Params: { id: string }; Body: UpdateOrderPayload }>,
   reply: FastifyReply,
 ) => {
   const { id } = orderParamSchema.parse(request.params);

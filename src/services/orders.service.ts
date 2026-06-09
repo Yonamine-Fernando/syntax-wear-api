@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { CreateOrderRequest, OrderFilters } from "../types/index.js";
 import { prisma } from "../utils/prisma.js";
+import { type UpdateOrderPayload } from "../utils/validators.js";
 
 export const getOrders = async (filters: OrderFilters = {}) => {
   const { page = 1, limit = 10, status, userId, startDate, endDate } = filters;
@@ -177,12 +178,7 @@ export const createOrder = async (userId: string, payload: CreateOrderRequest) =
   return order;
 };
 
-export const updateOrder = async (
-  orderId: string,
-  userId: string,
-  userRole: string,
-  payload: Partial<CreateOrderRequest> & { status?: string },
-) => {
+export const updateOrder = async (orderId: string, userId: string, userRole: string, payload: UpdateOrderPayload) => {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: {

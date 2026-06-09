@@ -145,3 +145,6 @@ export const updateOrderSchema = createOrderSchema.partial().extend({
   shippingAddress: shippingAddressSchema.partial().optional(),
   status: z.enum(["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"]).optional(),
 });
+
+export type UpdateOrderPayload = z.infer<typeof updateOrderSchema>;
+export type CreateOrderPayload = z.infer<typeof createOrderSchema>;

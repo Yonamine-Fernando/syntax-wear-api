@@ -98,7 +98,7 @@ export interface CreateOrderRequest {
 
 export interface UpdateOrderRequest {
   items?: OrderItemRequest[];
-  shippingAddress?: ShippingAddress | null;
+  shippingAddress?: Partial<ShippingAddress> | null;
   paymentMethod?: string | null;
   status?: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED";
 }
