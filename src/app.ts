@@ -17,7 +17,11 @@ export const buildApp = async () => {
     logger: true,
   });
 
-  const corsOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : ["http://localhost:3000"];
+  const corsOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean)
+    : ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000", "http://127.0.0.1:5173"];
   const allowCredentials = process.env.CORS_ALLOW_CREDENTIALS === "true";
 
   fastify.register(jwt, {
