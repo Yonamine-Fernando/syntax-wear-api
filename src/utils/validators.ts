@@ -51,6 +51,8 @@ export const productListSchema = z.object({
     .optional(),
   sortBy: z.enum(["price", "name", "created_at", "stock"]).optional(),
   sortOrder: z.enum(["asc", "desc"]).optional(),
+
+  categoryId: z.string().uuid("ID de categoria inválido").optional(),
 });
 
 export interface CreateCategory {

@@ -6,8 +6,6 @@ datasource db {
     provider = "postgresql"
 }
 
-/// Schema simplificado baseado no PRD: apenas `User` e `Product`.
-
 enum Role {
     ADMIN
     USER

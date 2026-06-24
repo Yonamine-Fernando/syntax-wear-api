@@ -18,10 +18,12 @@ export const getProducts = async (filters: ProductFilters) => {
     sortOrder = "desc",
   } = filters;
 
+  console.log("Filters received:", filters); // Log the received filters for debugging
+
   // Tipagem forte (Sem 'any'!)
   const where: Prisma.ProductWhereInput = {};
 
-  if (categoryId) {
+  if (filters.categoryId) {
     where.categoryId = categoryId;
   }
 

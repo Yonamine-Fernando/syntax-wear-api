@@ -33,7 +33,7 @@ async function main() {
       firstName: "Admin",
       lastName: "Syntax",
       email: "admin@syntaxwear.com",
-      passwordHash: "hash_seguro_123", // Verifique se no seu banco a coluna chama 'password' ou 'passwordHash'
+      passwordHash: "hash_seguro_123",
       cpf: "00000000001",
       phone: "11999999991",
       role: "ADMIN",
@@ -99,7 +99,7 @@ async function main() {
 
   const [catCasuais, catEsportes, catAcessorios, catCalcados, catInverno, catIntima, catPraia, catSocial] = categorias;
 
-  console.log("👕 Criando 10 Produtos...");
+  console.log("👕 Criando 10 Produtos (com Imagens e Cores)...");
 
   const productsData = [
     {
@@ -110,6 +110,8 @@ async function main() {
       categoryId: catCasuais.id,
       description: "100% algodão.",
       size: ["M", "L"],
+      color: "Branco",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Camiseta+Basica",
       active: true,
     },
     {
@@ -120,6 +122,8 @@ async function main() {
       categoryId: catCasuais.id,
       description: "Jeans premium.",
       size: ["40", "42"],
+      color: "Azul Marinho",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Calca+Jeans",
       active: true,
     },
     {
@@ -130,6 +134,8 @@ async function main() {
       categoryId: catEsportes.id,
       description: "Dry-fit.",
       size: ["S", "M"],
+      color: "Preto",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Regata+Fitness",
       active: true,
     },
     {
@@ -140,6 +146,8 @@ async function main() {
       categoryId: catCalcados.id,
       description: "Sola macia.",
       size: ["41", "42"],
+      color: "Branco/Cinza",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Tenis+Casual",
       active: true,
     },
     {
@@ -150,6 +158,8 @@ async function main() {
       categoryId: catAcessorios.id,
       description: "Aba curva.",
       size: ["Único"],
+      color: "Preto",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Bone+Trucker",
       active: true,
     },
     {
@@ -160,6 +170,8 @@ async function main() {
       categoryId: catInverno.id,
       description: "Resistente à água.",
       size: ["M", "L"],
+      color: "Preto",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Jaqueta",
       active: true,
     },
     {
@@ -170,6 +182,8 @@ async function main() {
       categoryId: catIntima.id,
       description: "Algodão com elastano.",
       size: ["M", "L"],
+      color: "Sortidas",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Cuecas+Boxer",
       active: true,
     },
     {
@@ -180,6 +194,8 @@ async function main() {
       categoryId: catPraia.id,
       description: "Secagem rápida.",
       size: ["M", "L"],
+      color: "Azul Marinho",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Sunga",
       active: true,
     },
     {
@@ -190,6 +206,8 @@ async function main() {
       categoryId: catSocial.id,
       description: "Fácil de passar.",
       size: ["M", "L"],
+      color: "Branco",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Camisa+Social",
       active: true,
     },
     {
@@ -200,6 +218,8 @@ async function main() {
       categoryId: catCalcados.id,
       description: "Amortecimento máximo.",
       size: ["40", "41"],
+      color: "Laranja/Preto",
+      imageUrl: "https://placehold.co/600x400/e2e8f0/8a8a8a?text=Tenis+Corrida",
       active: true,
     },
   ];
@@ -207,66 +227,66 @@ async function main() {
   await prisma.product.createMany({ data: productsData, skipDuplicates: true });
 
   // Buscar os produtos recém-criados para podermos vincular aos pedidos
-  const p = await prisma.product.findMany();
+  const p = await prisma.product.findMany({ orderBy: { createdAt: "asc" } });
 
   console.log("📦 Criando 4 Pedidos...");
 
-  console.log("📦 Criando 4 Pedidos...");
-
-  // Pedido 1: João, Status PAGO (2 itens)
-  await prisma.order.create({
-    data: {
-      userId: customer1.id,
-      status: "PAID",
-      totalPrice: Number(p[0].price) * 2 + Number(p[1].price) * 1,
-      items: {
-        create: [
-          { productId: p[0].id, quantity: 2, unitPrice: Number(p[0].price) },
-          { productId: p[1].id, quantity: 1, unitPrice: Number(p[1].price) },
-        ],
+  if (p.length >= 10) {
+    // Pedido 1: João, Status PAGO (2 itens)
+    await prisma.order.create({
+      data: {
+        userId: customer1.id,
+        status: "PAID",
+        totalPrice: Number(p[0].price) * 2 + Number(p[1].price) * 1,
+        items: {
+          create: [
+            { productId: p[0].id, quantity: 2, unitPrice: Number(p[0].price) },
+            { productId: p[1].id, quantity: 1, unitPrice: Number(p[1].price) },
+          ],
+        },
       },
-    },
-  });
+    });
 
-  // Pedido 2: João, Status ENTREGUE (1 item)
-  await prisma.order.create({
-    data: {
-      userId: customer1.id,
-      status: "DELIVERED",
-      totalPrice: Number(p[3].price) * 1,
-      items: {
-        create: [{ productId: p[3].id, quantity: 1, unitPrice: Number(p[3].price) }],
+    // Pedido 2: João, Status ENTREGUE (1 item)
+    await prisma.order.create({
+      data: {
+        userId: customer1.id,
+        status: "DELIVERED",
+        totalPrice: Number(p[3].price) * 1,
+        items: {
+          create: [{ productId: p[3].id, quantity: 1, unitPrice: Number(p[3].price) }],
+        },
       },
-    },
-  });
+    });
 
-  // Pedido 3: Maria, Status PENDENTE (3 itens)
-  await prisma.order.create({
-    data: {
-      userId: customer2.id,
-      status: "PENDING",
-      totalPrice: Number(p[5].price) * 1 + Number(p[8].price) * 2 + Number(p[9].price) * 1,
-      items: {
-        create: [
-          { productId: p[5].id, quantity: 1, unitPrice: Number(p[5].price) },
-          { productId: p[8].id, quantity: 2, unitPrice: Number(p[8].price) },
-          { productId: p[9].id, quantity: 1, unitPrice: Number(p[9].price) },
-        ],
+    // Pedido 3: Maria, Status PENDENTE (3 itens)
+    await prisma.order.create({
+      data: {
+        userId: customer2.id,
+        status: "PENDING",
+        totalPrice: Number(p[5].price) * 1 + Number(p[8].price) * 2 + Number(p[9].price) * 1,
+        items: {
+          create: [
+            { productId: p[5].id, quantity: 1, unitPrice: Number(p[5].price) },
+            { productId: p[8].id, quantity: 2, unitPrice: Number(p[8].price) },
+            { productId: p[9].id, quantity: 1, unitPrice: Number(p[9].price) },
+          ],
+        },
       },
-    },
-  });
+    });
 
-  // Pedido 4: Maria, Status CANCELADO (1 item)
-  await prisma.order.create({
-    data: {
-      userId: customer2.id,
-      status: "CANCELLED",
-      totalPrice: Number(p[4].price) * 1,
-      items: {
-        create: [{ productId: p[4].id, quantity: 1, unitPrice: Number(p[4].price) }],
+    // Pedido 4: Maria, Status CANCELADO (1 item)
+    await prisma.order.create({
+      data: {
+        userId: customer2.id,
+        status: "CANCELLED",
+        totalPrice: Number(p[4].price) * 1,
+        items: {
+          create: [{ productId: p[4].id, quantity: 1, unitPrice: Number(p[4].price) }],
+        },
       },
-    },
-  });
+    });
+  }
 
   console.log("✅ Seed finalizado com sucesso absoluto! 3 Usuários, 8 Categorias, 10 Produtos e 4 Pedidos criados.");
 }

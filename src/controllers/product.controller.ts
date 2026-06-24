@@ -12,7 +12,9 @@ import slugify from "slugify";
 
 export const listProducts = async (request: FastifyRequest<{ Querystring: ProductFilters }>, reply: FastifyReply) => {
   const filters = productListSchema.parse(request.query);
+  console.log("chegou na api", request.query);
   const result = await getProducts(filters as ProductFilters);
+  console.log("passou peo zod:", filters);
   reply.status(200).send(result);
 };
 
