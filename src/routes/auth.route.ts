@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify/types/instance.js";
-import { login, register } from "../controllers/auth.controller.js";
+import { login, profile, register } from "../controllers/auth.controller.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -43,5 +44,18 @@ export default async function authRoutes(fastify: FastifyInstance) {
       },
     },
     login,
+  );
+
+  fastify.get(
+    "/profile",
+    {
+      preHandler: [authenticate],
+      schema: {
+        tags: ["Auth"],
+        description: "Retorna o perfil do usuário atenticado",
+        security: [{ bearerAuth: [] }],
+      },
+    },
+    profile,
   );
 }

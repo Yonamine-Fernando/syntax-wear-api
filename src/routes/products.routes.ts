@@ -15,6 +15,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
     "/:id",
     {
       schema: {
+        security: [{ bearerAuth: [] }],
         tags: ["Products"],
         description: "Obter um produto pelo ID",
         params: {
@@ -63,6 +64,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
           },
         },
       },
+      preHandler: [authenticate],
     },
     getProduct,
   );
@@ -70,6 +72,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
     "/",
     {
       schema: {
+        security: [{ bearerAuth: [] }],
         tags: ["Products"],
         description: "criar produto (Apenas ADMIN)",
         body: {
@@ -100,6 +103,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
     "/:id",
     {
       schema: {
+        security: [{ bearerAuth: [] }],
         tags: ["Products"],
         description: "atualizar produto",
         body: {
@@ -130,6 +134,7 @@ export default async function productRoutes(fastify: FastifyInstance) {
     "/:id",
     {
       schema: {
+        security: [{ bearerAuth: [] }],
         tags: ["Products"],
         description: "deletar produto",
         params: {

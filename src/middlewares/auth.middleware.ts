@@ -1,10 +1,20 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import { prisma } from "../utils/prisma.js";
 
 export const authenticate = async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
   try {
-    await request.jwtVerify();
+    const decoded = await request.jwtVerify<{ userId: string }>();
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      select: { id: true, role: true },
+    });
+    if (!user) {
+      reply.status(401).send({ message: "Usuario não encontrado" });
+      return;
+    }
+    request.user = user;
   } catch (err) {
-    reply.status(401).send({ message: "Token inválido ou expirado" });
+    reply.status(401).send({ message: "Token inválido ou experido" });
     return;
   }
 };

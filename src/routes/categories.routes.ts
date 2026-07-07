@@ -10,8 +10,12 @@ import { authenticate, authorizeAdmin } from "../middlewares/auth.middleware.js"
 import { CategoryFilters, CreateCategory } from "../types/index.js";
 
 export default async function categoryRoutes(fastify: FastifyInstance) {
-  fastify.get<{ Querystring: CategoryFilters }>("/", categoryListRouteSchema, listCategories);
-  fastify.get("/:id", categoryRouteSchema, getCategory);
+  fastify.get<{ Querystring: CategoryFilters }>(
+    "/",
+    { ...categoryListRouteSchema, preHandler: [authenticate] },
+    listCategories,
+  );
+  fastify.get<{ Params: { id: string } }>("/:id", { ...categoryRouteSchema, preHandler: [authenticate] }, getCategory);
   fastify.post<{
     Body: CreateCategory;
   }>(
@@ -60,6 +64,7 @@ export default async function categoryRoutes(fastify: FastifyInstance) {
 
 const categoryListRouteSchema = {
   schema: {
+    security: [{ bearerAuth: [] }],
     tags: ["Categories"],
     description: "Listar categorias",
     querystring: {
@@ -101,6 +106,7 @@ const categoryListRouteSchema = {
 
 const categoryRouteSchema = {
   schema: {
+    security: [{ bearerAuth: [] }],
     tags: ["Categories"],
     description: "Obter categoria pelo ID",
     params: {
@@ -146,6 +152,7 @@ const updateCategoryRouteSchema = {
       required: ["id"],
     },
 
+    security: [{ bearerAuth: [] }],
     body: {
       type: "object",
       description: "Envie apenas os campos que deseja atualizar",
@@ -188,6 +195,7 @@ const updateCategoryRouteSchema = {
 };
 const deleteCategoryRouteSchema = {
   schema: {
+    security: [{ bearerAuth: [] }],
     tags: ["Categories"],
     description: "Desativar uma categoria (Soft Delete - Apenas ADMIN)",
     // security: [{ bearerAuth: [] }], // Descomente quando ativar a autenticação global
